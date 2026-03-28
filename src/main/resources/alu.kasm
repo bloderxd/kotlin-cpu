@@ -1,0 +1,32 @@
+; High-level equivalent (Kotlin-like):
+; fun main() {
+;   val a = 12
+;   val b = 5
+;   val sum = a + b
+;   val diff = a - b
+;   val andBits = a and b
+;   val orBits = a or b
+;   val xorBits = a xor b
+;   val copyOfA = a
+;   val shl1 = a shl 1
+;   val shr1 = a shr 1
+;   return // HALT
+; }
+
+main:
+  LI R1, 12
+  LI R2, 5
+
+  ADD R3, R1, R2
+  SUB R4, R1, R2
+  AND R5, R1, R2
+  OR  R6, R1, R2
+  XOR R7, R1, R2
+  MOV R2, R1
+
+  LI R6, 1
+  SHL R3, R1, R6
+  SHR R4, R1, R6
+
+  HALT
+

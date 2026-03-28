@@ -1,0 +1,26 @@
+; High-level equivalent (Kotlin-like):
+; fun main() {
+;   var r1 = 5
+;   var r2 = 5
+;   var r3 = 0
+;   if (r1 == r2) {
+;     equalCase()
+;   }
+;   r3 = 31        // This is skipped because the branch is taken
+; }
+;
+; fun equalCase() {
+;   r3 += 7        // This executes
+; }
+
+main:
+  LI R1, 5
+  LI R2, 5
+  LI R3, 0
+  BEQ R1, R2, equalCase
+  LI R3, 31
+
+equalCase:
+  ADDI R3, R3, 7
+  HALT
+

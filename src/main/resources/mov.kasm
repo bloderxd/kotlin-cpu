@@ -1,0 +1,13 @@
+; High-level equivalent (Kotlin-like):
+; fun main() {
+;   var source = 42
+;   var destination = 0
+;   destination = source
+; }
+
+main:
+  LI R1, 42
+  LI R2, 0
+  MOV R2, R1
+  HALT
+

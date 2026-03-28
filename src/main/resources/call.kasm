@@ -1,0 +1,22 @@
+; High-level equivalent (Kotlin-like):
+; fun main() {
+;   var r1 = 4
+;   captureAndCompute()
+;   var r2 = r1 + 1   // Executes only after RET returns control to main
+; }
+;
+; fun captureAndCompute() {
+;   r3 = r1 + 6
+; }
+
+main:
+  LI R1, 4
+  CALL captureAndCompute
+  ADDI R2, R1, 1
+  HALT
+
+captureAndCompute:
+  ADDI R3, R1, 6
+  RET
+
+
