@@ -1,15 +1,30 @@
-package com.bloder
+package com.bloder.kasm
 
-sealed class AsmLine
+private sealed class AsmLine
 
-data class Instruction(
+private data class Instruction(
     val name: String,
     val args: List<String>
 ) : AsmLine()
 
-data class Label(val name: String) : AsmLine()
+private data class Label(val name: String) : AsmLine()
 
-fun assemble(program: String): List<UShort> {
+class KasmParser private constructor(private val encoder: IsaEncoder) {
+
+    companion object {
+        operator fun invoke(program: String): List<UShort> {
+            val encoder = IsaEncoder
+            return KasmParser(encoder).parse(program)
+        }
+    }
+
+    fun parse(program: String): List<UShort> {
+        return context(encoder) { assemble(program = program) }
+    }
+}
+
+context(encoder: IsaEncoder)
+private fun assemble(program: String): List<UShort> {
     val lines = parse(program)
     val labels = resolveLabels(lines)
 
@@ -21,114 +36,114 @@ fun assemble(program: String): List<UShort> {
 
             val inst = when (line.name) {
 
-                "ADD" -> Tiny16Encoder.ADD(
+                "ADD" -> encoder.ADD(
                     parseReg(line.args[0]),
                     parseReg(line.args[1]),
                     parseReg(line.args[2])
                 )
 
-                "SUB" -> Tiny16Encoder.SUB(
+                "SUB" -> encoder.SUB(
                     parseReg(line.args[0]),
                     parseReg(line.args[1]),
                     parseReg(line.args[2])
                 )
 
-                "AND" -> Tiny16Encoder.AND(
+                "AND" -> encoder.AND(
                     parseReg(line.args[0]),
                     parseReg(line.args[1]),
                     parseReg(line.args[2])
                 )
 
-                "OR" -> Tiny16Encoder.OR(
+                "OR" -> encoder.OR(
                     parseReg(line.args[0]),
                     parseReg(line.args[1]),
                     parseReg(line.args[2])
                 )
 
-                "XOR" -> Tiny16Encoder.XOR(
+                "XOR" -> encoder.XOR(
                     parseReg(line.args[0]),
                     parseReg(line.args[1]),
                     parseReg(line.args[2])
                 )
 
-                "MOV" -> Tiny16Encoder.MOV(
+                "MOV" -> encoder.MOV(
                     parseReg(line.args[0]),
                     parseReg(line.args[1])
                 )
 
-                "SHL" -> Tiny16Encoder.SHL(
+                "SHL" -> encoder.SHL(
                     parseReg(line.args[0]),
                     parseReg(line.args[1]),
                     parseReg(line.args[2])
                 )
 
-                "SHR" -> Tiny16Encoder.SHR(
+                "SHR" -> encoder.SHR(
                     parseReg(line.args[0]),
                     parseReg(line.args[1]),
                     parseReg(line.args[2])
                 )
 
-                "LI" -> Tiny16Encoder.LI(
+                "LI" -> encoder.LI(
                     parseReg(line.args[0]),
                     parseImm(line.args[1], labels, pc)
                 )
 
-                "LUI" -> Tiny16Encoder.LUI(
+                "LUI" -> encoder.LUI(
                     parseReg(line.args[0]),
                     parseImm(line.args[1], labels, pc)
                 )
 
-                "LOAD" -> Tiny16Encoder.LOAD(
+                "LOAD" -> encoder.LOAD(
                     parseReg(line.args[0]),
                     parseReg(line.args[1]),
                     parseImm(line.args[2], labels, pc)
                 )
 
-                "STORE" -> Tiny16Encoder.STORE(
+                "STORE" -> encoder.STORE(
                     parseReg(line.args[0]),
                     parseReg(line.args[1]),
                     parseImm(line.args[2], labels, pc)
                 )
 
-                "ADDI" -> Tiny16Encoder.ADDI(
+                "ADDI" -> encoder.ADDI(
                     parseReg(line.args[0]),
                     parseReg(line.args[1]),
                     parseImm(line.args[2], labels, pc)
                 )
 
-                "JMP" -> Tiny16Encoder.JMP(
+                "JMP" -> encoder.JMP(
                     parseImm(line.args[0], labels, pc)
                 )
 
-                "RET" -> Tiny16Encoder.RET()
+                "RET" -> encoder.RET()
 
-                "BEQ" -> Tiny16Encoder.BEQ(
+                "BEQ" -> encoder.BEQ(
                     parseReg(line.args[0]),
                     parseReg(line.args[1]),
                     parseImm(line.args[2], labels, pc)
                 )
 
-                "BNE" -> Tiny16Encoder.BNE(
+                "BNE" -> encoder.BNE(
                     parseReg(line.args[0]),
                     parseReg(line.args[1]),
                     parseImm(line.args[2], labels, pc)
                 )
 
-                "CALL" -> Tiny16Encoder.CALL(
+                "CALL" -> encoder.CALL(
                     parseImm(line.args[0], labels, pc)
                 )
 
-                "PUSH" -> Tiny16Encoder.PUSH(
+                "PUSH" -> encoder.PUSH(
                     parseReg(line.args[0])
                 )
 
-                "POP" -> Tiny16Encoder.POP(
+                "POP" -> encoder.POP(
                     parseReg(line.args[0])
                 )
 
-                "NOP" -> Tiny16Encoder.NOP()
+                "NOP" -> encoder.NOP()
 
-                "HALT" -> Tiny16Encoder.HALT()
+                "HALT" -> encoder.HALT()
 
                 else -> error("Unknown instruction: ${line.name}")
             }
@@ -141,7 +156,7 @@ fun assemble(program: String): List<UShort> {
     return output
 }
 
-fun parse(program: String): List<AsmLine> {
+private fun parse(program: String): List<AsmLine> {
     return program.lines()
         .map { it.trim() }
         .filter { it.isNotEmpty() }
@@ -158,7 +173,7 @@ fun parse(program: String): List<AsmLine> {
         }
 }
 
-fun resolveLabels(lines: List<AsmLine>): Map<String, Int> {
+private fun resolveLabels(lines: List<AsmLine>): Map<String, Int> {
     val labels = mutableMapOf<String, Int>()
     var pc = 0
 
@@ -172,11 +187,11 @@ fun resolveLabels(lines: List<AsmLine>): Map<String, Int> {
     return labels
 }
 
-fun parseReg(r: String): Int {
+private fun parseReg(r: String): Int {
     return r.removePrefix("R").toInt()
 }
 
-fun parseImm(value: String, labels: Map<String, Int>, pc: Int): Int {
+private fun parseImm(value: String, labels: Map<String, Int>, pc: Int): Int {
     return when {
         value.matches(Regex("-?\\d+")) -> value.toInt()
 

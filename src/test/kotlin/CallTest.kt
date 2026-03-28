@@ -12,7 +12,7 @@ class CallTest {
         assertEquals(4u.toUShort(), cpu.readReg(1))
         assertEquals(5u.toUShort(), cpu.readReg(2))
         assertEquals(10u.toUShort(), cpu.readReg(3))
-        assertEquals(0xFFFEu.toUShort(), cpu.SP)
+        assertEquals(0xFFFEu.toUShort(), cpu.sp { it })
     }
 }
 

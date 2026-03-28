@@ -1,4 +1,4 @@
-package com.bloder
+package com.bloder.kasm
 
 object KasmReader {
 

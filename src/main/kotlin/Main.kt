@@ -1,25 +1,13 @@
 package com.bloder
 
-private const val KASM = "call.kasm"
+import com.bloder.kasm.KasmParser
+import com.bloder.kasm.KasmReader
+
+private const val KASM = "jmp.kasm"
 
 fun main() {
-    val program = KasmReader(KASM)
-    val binary = assemble(program)
-
-    val cpu = CPU()
-    loadProgram(cpu, binary)
-
-    while (cpu.running) {
-        cpu.step(debug = true)
-    }
-}
-
-fun loadProgram(cpu: CPU, program: List<UShort>) {
-    var addr = 0
-
-    for (inst in program) {
-        cpu.memory[addr] = (inst.toInt() and 0xFF).toUByte()
-        cpu.memory[addr + 1] = ((inst.toInt() shr 8) and 0xFF).toUByte()
-        addr += 2
-    }
+    val source = KasmReader(KASM)
+    val program = KasmParser(source)
+    val isa = Isa.loadProgram(program = program, debugger = IsaDebugger.Logger)
+    isa.run()
 }
