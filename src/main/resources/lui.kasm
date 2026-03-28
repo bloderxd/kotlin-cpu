@@ -1,0 +1,27 @@
+; High-level equivalent (Kotlin-like):
+; fun main() {
+;   var r1 = 15
+;   r1 = (26 shl 8)
+;
+;   var r2 = 7
+;   r2 = (-1 shl 8)
+;
+;   val r3 = r2 + 31
+;   return // HALT
+; }
+;
+; Notes:
+; - LUI in this CPU overwrites the register with (imm6_signed << 8).
+; - Immediate range for LI/LUI/ADDI is signed 6-bit: -32..31.
+
+main:
+  LI R1, 15
+  LUI R1, 26
+
+  LI R2, 7
+  LUI R2, -1
+
+  ADDI R3, R2, 31
+
+  HALT
+

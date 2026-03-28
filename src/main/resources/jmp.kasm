@@ -1,0 +1,21 @@
+; High-level equivalent (Kotlin-like):
+; fun main() {
+;   var r1 = 0
+;   var r2 = 10
+;   jmp skipLabel  // Jump over r1 = 100
+;   r1 = 100       // This is skipped
+; }
+;
+; fun skipLabel() {
+;   r2 += 8        // This executes
+; }
+
+main:
+  LI R1, 0
+  LI R2, 10
+  JMP skip
+  LI R1, 100
+
+skip:
+  ADDI R2, R2, 8
+  HALT

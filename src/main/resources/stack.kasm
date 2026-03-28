@@ -1,0 +1,32 @@
+; High-level equivalent (Kotlin-like):
+; fun main() {
+;   val arg1 = 10
+;   val arg2 = 20
+;   val result = add(arg1, arg2)
+; }
+;
+; fun add(a: Int, b: Int): Int {
+;   return a + b
+; }
+
+main:
+  LI R1, 10       ; arg1 = 10
+  LI R2, 20       ; arg2 = 20
+
+  PUSH R1         ; push arg1 onto stack
+  PUSH R2         ; push arg2 onto stack
+  CALL add        ; call add function
+
+  HALT
+
+add:
+  POP R3          ; R3 = arg1 (popped first - LIFO)
+  POP R4          ; R4 = arg2
+
+  ; Function body: compute result = arg1 + arg2
+  ADD R5, R3, R4  ; R5 = R3 + R4
+
+  ; For now, result stays in R5
+  ; (In a complete calling convention, we'd push result and use return address)
+  HALT
+
