@@ -9,11 +9,11 @@ private data class Instruction(
 
 private data class Label(val name: String) : AsmLine()
 
-class KasmParser private constructor(private val encoder: IsaEncoder) {
+class KasmParser private constructor(private val encoder: KasmEncoder) {
 
     companion object {
         operator fun invoke(program: String): List<UShort> {
-            val encoder = IsaEncoder
+            val encoder = KasmEncoder
             return KasmParser(encoder).parse(program)
         }
     }
@@ -23,7 +23,7 @@ class KasmParser private constructor(private val encoder: IsaEncoder) {
     }
 }
 
-context(encoder: IsaEncoder)
+context(encoder: KasmEncoder)
 private fun assemble(program: String): List<UShort> {
     val lines = parse(program)
     val labels = resolveLabels(lines)

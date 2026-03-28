@@ -1,7 +1,5 @@
 package com.bloder
 
-import kotlin.toUShort
-
 enum class OpCode(val code: Int) {
     ALU(code = 0x0),
     ADDI(code = 0x1),
@@ -27,17 +25,10 @@ class Isa private constructor(
 ) : IsaExecution {
 
     companion object {
-        fun loadProgram(
-            program: List<UShort>,
+        fun create(
+            cpu: Cpu,
             debugger: IsaDebugger = IsaDebugger.None
         ): Isa {
-            val cpu = Cpu()
-            var address = 0
-            for (inst in program) {
-                cpu.writeMemory(address = address, value = (inst.toInt() and 0xFF).toUByte())
-                cpu.writeMemory(address = address + 1, value = ((inst.toInt() shr 8) and 0xFF).toUByte())
-                address += 2
-            }
             return Isa(
                 cpu = cpu,
                 decoder = IsaDecoder,

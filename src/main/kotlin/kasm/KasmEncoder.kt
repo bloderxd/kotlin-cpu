@@ -3,7 +3,7 @@ package com.bloder.kasm
 import com.bloder.AluInstruction
 import com.bloder.OpCode
 
-interface IsaEncoder {
+interface KasmEncoder {
 
     fun ADD(rd: Int, rs1: Int, rs2: Int) =
         encodeRegister(OpCode.ALU, rd, rs1, rs2, AluInstruction.ADD)
@@ -115,5 +115,5 @@ interface IsaEncoder {
                 ).toUShort()
     }
 
-    companion object : IsaEncoder
+    companion object : KasmEncoder
 }
