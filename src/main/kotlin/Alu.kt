@@ -13,7 +13,6 @@ enum class AluInstruction(val operation: Int) {
 
 interface Alu {
 
-    context(decoder: IsaDecoder)
     fun execute(
         operation: AluInstruction,
         a: UShort,
