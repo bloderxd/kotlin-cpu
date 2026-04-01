@@ -1,5 +1,11 @@
 # kotlin-cpu
 
+This project is part of a series of 2 blog posts and it's better explained there:
+
+[Part 1: How a CPU Works](https://bloder.io/cpu-from-scratch-part-1)
+
+[Part 2: Building the CPU](https://bloder.io/cpu-from-scratch-part-2)
+
 A small **16-bit CPU emulator** written in Kotlin, with a tiny assembler (`.kasm`) and sample programs.
 
 The project models a complete fetch-decode-execute loop with registers, RAM, stack, control flow, arithmetic/logic instructions, and an assembler that supports labels.
